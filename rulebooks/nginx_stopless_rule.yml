@@ -1,5 +1,5 @@
 ---
-- name: Collect Event Form Zabbix Trigger
+- name: Collect Event From Zabbix Trigger
   hosts: all
   sources:
     - ansible.eda.webhook:
