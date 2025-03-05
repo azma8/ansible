@@ -1,0 +1,37 @@
+- name: deploy nginx for zabbix
+  hosts: all
+  tasks:
+    - name: install nginx
+      dnf:
+        name: nginx
+        state: present
+
+    - name: make sure nginx running and enable
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: create file stub_module.conf
+      file:
+        path: /etc/nginx/default.d/stub_module.conf
+        state: touch
+
+    - name: configuration nginx for monitoring 
+      blockinfile:
+        path: /etc/nginx/default.d/stub_module.conf
+        append_newline: true
+        prepend_newline: true
+        block: |
+            location = /basic_status {
+              stub_status;
+              allow 127.0.0.1;
+              allow ::1;
+              deny all;
+            }
+        state: present
+
+    - name: restart nginx after configure
+      service:
+        name: nginx
+        state: restarted
